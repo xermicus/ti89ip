@@ -102,9 +102,9 @@ void getNetmask(int netmaskbit, int *netmask)
 void getNetaddress(int *address, int netmaskbit, int *netmask, int *netaddress)
 {
 	int i;
-	int ioct = netmaskbit / 8;
-	int ispecial = netmaskbit - ioct * 8;
-	int ilength = 256 / (int)pow(2, ispecial);
+	int ioct = netmaskbit / 8;	// 3
+	int ispecial = netmaskbit - ioct * 8;	// 6
+	int ilength = 256 / (int)pow(2, ispecial);	// 4
 	
 	for (i = 0; i < 4; i++)
 	{
@@ -118,7 +118,7 @@ void getNetaddress(int *address, int netmaskbit, int *netmask, int *netaddress)
 		}
 	}
 	
-	while (netaddress[ioct] + ilength < address[ioct])
+	while (netaddress[ioct] + ilength <= address[ioct])
 	{
 		netaddress[ioct] += ilength;
 	}
@@ -127,7 +127,7 @@ void getNetaddress(int *address, int netmaskbit, int *netmask, int *netaddress)
 /* getBroadcast
  * Calculates the Broadcast address for a specific IP Adress
  */
-void getBroadcast(int *address, int netmaskbit, int *netmask, int *netaddress)
+void getBroadcast(int *address, int netmaskbit, int *netmask, int *brdaddress)
 {
 	int i;
 	int ioct = netmaskbit / 8;
@@ -138,17 +138,17 @@ void getBroadcast(int *address, int netmaskbit, int *netmask, int *netaddress)
 	{
 		if (netmask[i] == 255)
 		{
-			netaddress[i] = address[i];			
+			brdaddress[i] = address[i];			
 		}
 		else
 		{
-			netaddress[i] = 255;
+			brdaddress[i] = 255;
 		}
 	}
 	
-	while (netaddress[ioct] -ilength >= address[ioct])
+	while (brdaddress[ioct] -ilength >= address[ioct])
 	{
-		netaddress[ioct] -= ilength;
+		brdaddress[ioct] -= ilength;
 	}
 	
 }
@@ -158,11 +158,11 @@ void getBroadcast(int *address, int netmaskbit, int *netmask, int *netaddress)
  */
 long getMaxclients(int netmaskbit)
 {
-	return (long)pow(2, 32 - netmaskbit) - 2;
+	return (netmaskbit > 31 ? 1 : (long)pow(2, 32 - netmaskbit) - 2);
 }
 
 /* _main
- * The Main functions. Asks for an IP-Adress and shows its details.
+ * The Main function. Asks for an IP-Adress and shows its details.
  */
 void _main(void)
 {

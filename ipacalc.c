@@ -1,6 +1,19 @@
+// ipacalc.c
+// Maintainer: Cyrill Leutwiler <bigcyrill @ hotmail dot com>
+// Created 26.04.2015; 21:14:21
+
+// Delete or comment out the items you do not need.
+#define COMMENT_STRING         "An simple IP-Addresscalculator for TI-89 Titanium."
+#define COMMENT_PROGRAM_NAME   "ipacalc"
+#define COMMENT_VERSION_STRING "1.0"
+#define COMMENT_VERSION_NUMBER 1,0,0,0 /* major, minor, revision, subrevision */
+
 #include <tigcclib.h>
 
-// Custom String Input Function
+/* InputStr
+ * Custom String Input Function
+ * This is not my own code! I just copied this from the help..
+ */
 void InputStr(char *buffer, unsigned short maxlen)
 {
   SCR_STATE ss;
@@ -22,7 +35,10 @@ void InputStr(char *buffer, unsigned short maxlen)
     } while (key != KEY_ENTER);
 }
 
-
+/* InputInt
+ * Returns an integer from input.
+ * Also checks the user input, if its not a number it will ask for input again.
+ */
 int InputInt (int min, int max)
 {	
 	int ivalidinput;
@@ -52,6 +68,9 @@ int InputInt (int min, int max)
 	return iresult;
 }
 
+/* getNetmask
+ * Calculates the netmask for a given number of netmask bits.
+ */
 void getNetmask(int netmaskbit, int *netmask)
 {
 	int i;	
@@ -77,7 +96,9 @@ void getNetmask(int netmaskbit, int *netmask)
 	}
 }
 
-
+/* getNetaddress
+ * Calculates the network address for for the given IP Adress
+ */
 void getNetaddress(int *address, int netmaskbit, int *netmask, int *netaddress)
 {
 	int i;
@@ -103,7 +124,9 @@ void getNetaddress(int *address, int netmaskbit, int *netmask, int *netaddress)
 	}
 }
 
-
+/* getBroadcast
+ * Calculates the Broadcast address for a specific IP Adress
+ */
 void getBroadcast(int *address, int netmaskbit, int *netmask, int *netaddress)
 {
 	int i;
@@ -130,15 +153,17 @@ void getBroadcast(int *address, int netmaskbit, int *netmask, int *netaddress)
 	
 }
 
-
+/* getBroadcast
+ * Calculates how many Adresses are available for the given netmaskbits.
+ */
 long getMaxclients(int netmaskbit)
 {
-	int ireverse = 32 - netmaskbit;
-	long result = (long)pow(2, ireverse);
-	return result - 2;
+	return (long)pow(2, 32 - netmaskbit) - 2;
 }
 
-// Main Function
+/* _main
+ * The Main functions. Asks for an IP-Adress and shows its details.
+ */
 void _main(void)
 {
   clrscr ();

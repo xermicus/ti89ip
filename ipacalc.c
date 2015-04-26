@@ -11,7 +11,7 @@ void InputStr(char *buffer, unsigned short maxlen)
   do
     {
       MoveTo (ss.CurX, ss.CurY);
-      printf ("%s_  ", buffer);
+      printf ("%s  ", buffer);
         // Note that two spaces are required only if the F_4x6 font is used
       key = ngetchx ();
       if (key >= ' ' && key <= '~' && i < maxlen)
@@ -63,13 +63,39 @@ int InputInt (int min, int max)
 	return iresult;
 }
 
+void getNetmask(int netmaskbit, int *netmask)
+{
+	int i;	
+	int ioct = netmaskbit / 8;
+	for (i = 0; i < 4; i++)
+	{
+		if (i < ioct)
+		{
+			netmask[i] = 255;			
+		}
+		else
+		{
+			netmask[i] = 0;
+		}
+	}
+	
+	int ispecial = netmaskbit - ioct * 8;
+	for (i = 7; i > 0; i--)
+	{
+		 if (ispecial == 0) { break; }
+		 netmask[ioct] += (int)pow(2, i);
+		 ispecial--;
+	}
+}
+
 // Main Function
 void _main(void)
 {
   clrscr ();
   
   int iaddress[4];
-  int inetmask;
+  int inetmask[4];
+  int inetmaskbit;
   
   int i;
   for (i = 0; i < 4; i++)
@@ -78,11 +104,13 @@ void _main(void)
   	iaddress[i] = InputInt(0, 255);
   }
   printf("\nNetmask (bits): ");
-  inetmask = InputInt(0, 32);
+  inetmaskbit = InputInt(0, 32);
   
- 	printf("CIDR: \n%i.%i.%i.%i/%i", iaddress[0], iaddress[1], iaddress[2], iaddress[3], inetmask);
-  
- //for (i = 0; i < 3; i++)  {  }
+  clrscr ();
+ 	printf("\nCIDR: %i.%i.%i.%i/%i", iaddress[0], iaddress[1], iaddress[2], iaddress[3], inetmaskbit);
+ 	
+ 	getNetmask(inetmaskbit, inetmask);
+ 	printf("\nNetmask: %i.%i.%i.%i", inetmask[0], inetmask[1], inetmask[2], inetmask[3]);
   
   ngetchx ();
 }

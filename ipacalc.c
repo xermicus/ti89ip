@@ -22,17 +22,6 @@ void InputStr(char *buffer, unsigned short maxlen)
     } while (key != KEY_ENTER);
 }
 
-char *IntToStr (unsigned long an_integer)
-{
-  static char result [] = "          \0";    // 10 spaces and \0
-  char *ptr = result + 10;
-  while (an_integer)
-    {
-      *ptr-- = an_integer % 10 + '0';
-      an_integer/=10;
-    }
-  return ptr;
-}
 
 int InputInt (int min, int max)
 {	
@@ -88,9 +77,65 @@ void getNetmask(int netmaskbit, int *netmask)
 	}
 }
 
-int getMaxclients(int netmaskbit)
+
+void getNetaddress(int *address, int netmaskbit, int *netmask, int *netaddress)
 {
-	return (int)pow(2, 32 - netmaskbit) - 2;
+	int i;
+	int ioct = netmaskbit / 8;
+	int ispecial = netmaskbit - ioct * 8;
+	int ilength = 256 / (int)pow(2, ispecial);
+	
+	for (i = 0; i < 4; i++)
+	{
+		if (netmask[i] == 255)
+		{
+			netaddress[i] = address[i];			
+		}
+		else
+		{
+			netaddress[i] = 0;
+		}
+	}
+	
+	while (netaddress[ioct] + ilength < address[ioct])
+	{
+		netaddress[ioct] += ilength;
+	}
+}
+
+
+void getBroadcast(int *address, int netmaskbit, int *netmask, int *netaddress)
+{
+	int i;
+	int ioct = netmaskbit / 8;
+	int ispecial = netmaskbit - ioct * 8;
+	int ilength = 256 / (int)pow(2, ispecial);
+	
+	for (i = 0; i < 4; i++)
+	{
+		if (netmask[i] == 255)
+		{
+			netaddress[i] = address[i];			
+		}
+		else
+		{
+			netaddress[i] = 255;
+		}
+	}
+	
+	while (netaddress[ioct] -ilength >= address[ioct])
+	{
+		netaddress[ioct] -= ilength;
+	}
+	
+}
+
+
+long getMaxclients(int netmaskbit)
+{
+	int ireverse = 32 - netmaskbit;
+	long result = (long)pow(2, ireverse);
+	return result - 2;
 }
 
 // Main Function
@@ -100,6 +145,8 @@ void _main(void)
   
   int iaddress[4];
   int inetmask[4];
+  int inetaddr[4];
+  int ibrdcast[4];
   int inetmaskbit;
   
   int i;
@@ -117,7 +164,13 @@ void _main(void)
  	getNetmask(inetmaskbit, inetmask);
  	printf("\nNetmask: %i.%i.%i.%i", inetmask[0], inetmask[1], inetmask[2], inetmask[3]);
  	
- 	printf("\nClients: %i", getMaxclients(inetmaskbit));
+ 	getNetaddress(iaddress, inetmaskbit, inetmask, inetaddr);
+ 	printf("\nNetaddr: %i.%i.%i.%i", inetaddr[0], inetaddr[1], inetaddr[2], inetaddr[3]);
+ 	
+ 	getBroadcast(iaddress, inetmaskbit, inetmask, ibrdcast);
+ 	printf("\nBrdcast: %i.%i.%i.%i", ibrdcast[0], ibrdcast[1], ibrdcast[2], ibrdcast[3]);
+ 	
+ 	printf("\nClients: %lu", getMaxclients(inetmaskbit));
   
   ngetchx ();
 }

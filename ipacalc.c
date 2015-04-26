@@ -1,6 +1,6 @@
 #include <tigcclib.h>
 
-// String input functon
+// Custom String Input Function
 void InputStr(char *buffer, unsigned short maxlen)
 {
   SCR_STATE ss;
@@ -22,7 +22,6 @@ void InputStr(char *buffer, unsigned short maxlen)
     } while (key != KEY_ENTER);
 }
 
-// Helper function
 char *IntToStr (unsigned long an_integer)
 {
   static char result [] = "          \0";    // 10 spaces and \0
@@ -35,8 +34,7 @@ char *IntToStr (unsigned long an_integer)
   return ptr;
 }
 
-// Function to read an Adressoctet
-int InputAOct ()
+int InputInt (int min, int max)
 {	
 	int ivalidinput;
 	int iresult;		
@@ -52,7 +50,7 @@ int InputAOct ()
 	  	iresult += inumber;
 	  	
 	  	//Input validation
-	  	if ((inumber < 0 || inumber > 9) || iresult < 0 || iresult > 255)
+	  	if ((inumber < 0 || inumber > 9) || iresult < min || iresult > max)
 	  	{
 	  		ivalidinput = 0;
 	  		printf("\n%s\n", "invalid input, try again:");
@@ -70,8 +68,21 @@ void _main(void)
 {
   clrscr ();
   
-  //printf ("\n%s", s);
-  printf("\n%i", InputAOct()+1);
+  int iaddress[4];
+  int inetmask;
+  
+  int i;
+  for (i = 0; i < 4; i++)
+  {
+  	printf("\n%i. Adressoctet: ", i+1);
+  	iaddress[i] = InputInt(0, 255);
+  }
+  printf("\nNetmask (bits): ");
+  inetmask = InputInt(0, 32);
+  
+ 	printf("CIDR: \n%i.%i.%i.%i/%i", iaddress[0], iaddress[1], iaddress[2], iaddress[3], inetmask);
+  
+ //for (i = 0; i < 3; i++)  {  }
   
   ngetchx ();
 }

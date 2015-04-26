@@ -88,6 +88,11 @@ void getNetmask(int netmaskbit, int *netmask)
 	}
 }
 
+int getMaxclients(int netmaskbit)
+{
+	return (int)pow(2, 32 - netmaskbit) - 2;
+}
+
 // Main Function
 void _main(void)
 {
@@ -107,10 +112,12 @@ void _main(void)
   inetmaskbit = InputInt(0, 32);
   
   clrscr ();
- 	printf("\nCIDR: %i.%i.%i.%i/%i", iaddress[0], iaddress[1], iaddress[2], iaddress[3], inetmaskbit);
+ 	printf("\nAddress: %i.%i.%i.%i/%i", iaddress[0], iaddress[1], iaddress[2], iaddress[3], inetmaskbit);
  	
  	getNetmask(inetmaskbit, inetmask);
  	printf("\nNetmask: %i.%i.%i.%i", inetmask[0], inetmask[1], inetmask[2], inetmask[3]);
+ 	
+ 	printf("\nClients: %i", getMaxclients(inetmaskbit));
   
   ngetchx ();
 }

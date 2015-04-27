@@ -1,8 +1,7 @@
 // ipacalc.c
-// Maintainer: Cyrill Leutwiler <bigcyrill @ hotmail dot com>
+// Maintainer: Cyrill Leutwiler <bigcyrill at hotmail dot com>
 // Created 26.04.2015; 21:14:21
 
-// Delete or comment out the items you do not need.
 #define COMMENT_STRING         "An simple IP-Addresscalculator for TI-89 Titanium."
 #define COMMENT_PROGRAM_NAME   "ipacalc"
 #define COMMENT_VERSION_STRING "1.0"
@@ -12,7 +11,7 @@
 
 /* InputStr
  * Custom String Input Function
- * This is not my own code! I just copied this from the help..
+ * The following function is not my own code! Thanks goes to the KTIGCC help.
  */
 void InputStr(char *buffer, unsigned short maxlen)
 {
@@ -97,14 +96,14 @@ void getNetmask(int netmaskbit, int *netmask)
 }
 
 /* getNetaddress
- * Calculates the network address for for the given IP Adress
+ * Calculates the network address for for the given IP-Address
  */
 void getNetaddress(int *address, int netmaskbit, int *netmask, int *netaddress)
 {
 	int i;
-	int ioct = netmaskbit / 8;	// 3
-	int ispecial = netmaskbit - ioct * 8;	// 6
-	int ilength = 256 / (int)pow(2, ispecial);	// 4
+	int ioct = netmaskbit / 8;
+	int ispecial = netmaskbit - ioct * 8;
+	int ilength = 256 / (int)pow(2, ispecial);
 	
 	for (i = 0; i < 4; i++)
 	{
@@ -125,7 +124,7 @@ void getNetaddress(int *address, int netmaskbit, int *netmask, int *netaddress)
 }
 
 /* getBroadcast
- * Calculates the Broadcast address for a specific IP Adress
+ * Calculates the Broadcast address for a specific IP-Address
  */
 void getBroadcast(int *address, int netmaskbit, int *netmask, int *brdaddress)
 {
@@ -153,8 +152,8 @@ void getBroadcast(int *address, int netmaskbit, int *netmask, int *brdaddress)
 	
 }
 
-/* getBroadcast
- * Calculates how many Adresses are available for the given netmaskbits.
+/* getMaxclients
+ * Calculates how many Adresses are usable for the given netmaskbits.
  */
 long getMaxclients(int netmaskbit)
 {
@@ -162,7 +161,7 @@ long getMaxclients(int netmaskbit)
 }
 
 /* _main
- * The Main function. Asks for an IP-Adress and shows its details.
+ * The Main function. Asks for an IP-Address and prints out its details.
  */
 void _main(void)
 {
